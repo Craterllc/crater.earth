@@ -47,5 +47,5 @@ final class Snapper: NSObject, WKNavigationDelegate {
 let app = NSApplication.shared
 app.setActivationPolicy(.prohibited)
 let snapper = Snapper(width: width)
-snapper.web.load(URLRequest(url: url))
+snapper.web.load(URLRequest(url: url, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData))
 app.run()
