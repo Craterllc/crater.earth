@@ -259,5 +259,20 @@
       <span>Our mark: Shackleton crater, the Moon's south pole</span>
     </div>
   </footer>
+
+  <script>
+    // Email links do nothing on a computer with no mail app set up, so also copy the address and say so.
+    document.querySelectorAll('a[href^="mailto:"]').forEach(function (link) {
+      var label = link.textContent, timer;
+      link.addEventListener('click', function () {
+        if (!navigator.clipboard) return;
+        navigator.clipboard.writeText(link.href.slice(7)).then(function () {
+          link.textContent = 'Email copied';
+          clearTimeout(timer);
+          timer = setTimeout(function () { link.textContent = label; }, 2500);
+        });
+      });
+    });
+  </script>
 </body>
 </html>
