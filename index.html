@@ -58,14 +58,13 @@
     .wrap { max-width: 1080px; margin: 0 auto; padding: 0 22px; position: relative; }
     .mono { font-family: var(--mono); letter-spacing: .14em; text-transform: uppercase; font-size: 12.5px; color: var(--muted); }
 
-    /* ---------- Hero: deep space, the crater rising like a moon ---------- */
+    /* ---------- Hero: deep space, a base on Shackleton's rim with Earth rising ---------- */
     .hero {
       position: relative; overflow: hidden; min-height: min(92vh, 860px);
       display: flex; flex-direction: column;
       background:
-        radial-gradient(ellipse 70% 60% at 78% 42%, rgba(255, 140, 70, .10), transparent 60%),
-        radial-gradient(ellipse 120% 80% at 20% 110%, #101a35 0%, transparent 60%),
-        linear-gradient(180deg, #03050a 0%, var(--space-2) 100%);
+        radial-gradient(ellipse 120% 80% at 20% 110%, #0d1630 0%, transparent 60%),
+        linear-gradient(180deg, #010204 0%, var(--space) 100%);
     }
     .stars { position: absolute; inset: 0; background: url("assets/stars.svg") center / cover no-repeat; opacity: .9; }
     .hero > .wrap { width: 100%; }      /* full width inside the column layout */
@@ -84,15 +83,22 @@
     .hero p.tag { font-size: clamp(19px, 2.3vw, 24px); margin: 0 0 14px; color: var(--text); max-width: 520px; }
     .hero p.sub { color: var(--muted); margin: 0; max-width: 500px; }
 
-    .moon { position: absolute; z-index: 1; right: -9%; top: 50%; width: min(58vw, 680px); aspect-ratio: 1; transform: translateY(-50%); }
-    .moon img { position: absolute; inset: 9%; width: 82%; height: 82%; border-radius: 50%;
-                box-shadow: 0 0 80px 10px rgba(255, 140, 70, .10), inset -30px -40px 90px rgba(0,0,0,.65);
-                filter: saturate(.85) contrast(1.05); }
-    .moon::after { /* terminator shadow, like a real moon lit from the upper left */
-      content: ""; position: absolute; inset: 9%; border-radius: 50%;
-      background: radial-gradient(circle at 30% 28%, transparent 46%, rgba(3,5,10,.55) 72%, rgba(3,5,10,.9) 100%);
+    /* The art fades out at its left and bottom edges so it melts into the page.
+       Its width follows the hero's height (3:2), so the base stays clear of the headline. */
+    .scene { position: absolute; z-index: 1; top: 0; right: 0; bottom: 0; width: min(100%, calc(min(92vh, 860px) * 1.5)); }
+    .scene img {
+      display: block; width: 100%; height: 100%; object-fit: cover; object-position: right center;
+      -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 45%), linear-gradient(0deg, transparent 0%, #000 12%);
+      -webkit-mask-composite: source-in;
+      mask-image: linear-gradient(90deg, transparent 0%, #000 45%), linear-gradient(0deg, transparent 0%, #000 12%);
+      mask-composite: intersect;
     }
-    .moon svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+    .hero .mono, .hero p.tag, .hero p.sub { text-shadow: 0 1px 14px rgba(0, 0, 0, .7); }
+    .hero-copy { position: relative; }
+    .hero-copy::before { /* a soft dark patch behind the words, for when the base runs behind them */
+      content: ""; position: absolute; z-index: -1; inset: -14% -24% -14% -30%; pointer-events: none;
+      background: radial-gradient(closest-side, rgba(1, 2, 4, .78), rgba(1, 2, 4, 0));
+    }
 
     .coords { position: absolute; z-index: 2; bottom: 22px; left: 0; right: 0; }
     .coords .wrap { display: flex; flex-wrap: wrap; gap: 8px 22px; }
@@ -140,17 +146,24 @@
     footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 24px; }
     footer span { font-family: var(--mono); font-size: 11.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); }
 
+    @media (max-width: 1100px) {   /* the art goes above the words */
+      .hero { min-height: auto; }
+      .scene { top: 58px; bottom: auto; width: 100%; height: min(78vw, 560px); }
+      .scene img {
+        object-position: 72% 40%;
+        -webkit-mask-image: linear-gradient(0deg, transparent 0%, #000 14%);
+        mask-image: linear-gradient(0deg, transparent 0%, #000 14%);
+      }
+      .hero-body { padding-block: calc(min(78vw, 560px) * .9) 26px; }
+      .coords { position: relative; bottom: auto; padding-bottom: 30px; }
+    }
     @media (max-width: 860px) {
       .story .grid, .crew { grid-template-columns: 1fr; }
       .story .grid { gap: 22px; }
       section { padding: 64px 0; }
     }
     @media (max-width: 640px) {
-      .hero { min-height: auto; }
-      .moon { width: 96vw; right: -30vw; top: 36px; transform: none; opacity: .8; }
-      .hero-body { padding-block: 66vw 26px; }
       .hero h1 { margin-top: 10px; }
-      .coords { position: relative; bottom: auto; padding-bottom: 30px; }
       .coords .wrap { flex-direction: column; gap: 6px; }
       .route .labels span:nth-child(2) { display: none; }
     }
@@ -160,16 +173,8 @@
   <header class="hero">
     <div class="stars" aria-hidden="true"></div>
 
-    <div class="moon" aria-hidden="true">
-      <img src="assets/crater-512.png" alt="">
-      <svg viewBox="0 0 600 600">
-        <g transform="translate(300 300) rotate(-16)">
-          <ellipse rx="300" ry="96" fill="none" stroke="rgba(255,255,255,.16)" stroke-dasharray="3 7"/>
-          <ellipse rx="350" ry="122" fill="none" stroke="rgba(255,122,47,.22)"/>
-          <circle cx="-262" cy="58" r="4.5" fill="#ff7a2f"/>
-          <circle cx="-262" cy="58" r="11" fill="none" stroke="rgba(255,122,47,.35)"/>
-        </g>
-      </svg>
+    <div class="scene" aria-hidden="true">
+      <img src="assets/hero-shackleton-city.webp" alt="" width="1536" height="1024" fetchpriority="high">
     </div>
 
     <div class="wrap topbar">
